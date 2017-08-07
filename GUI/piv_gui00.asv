@@ -761,8 +761,7 @@ function PB_avgVelocity_Callback(hObject, eventdata, handles)
 % hObject    handle to PB_avgVelocity (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-if handles.isvideo==0 
+if handles.video==0 
 
 if isfield(handles,'xS')==0
 uiwait(msgbox('Run correlation first!'));
@@ -789,7 +788,7 @@ switch str;
 end
 guidata(hObject,handles)
 
-elseif handles.isvideo~=0 
+elseif handles.video~=0 
     m = handles.m;
     size(m.u,3)
     for k=1:size(m.u,3)
@@ -800,10 +799,10 @@ elseif handles.isvideo~=0
     
      for i=1:size(uavg,3)
        middle = round(size(uavg,1)/2)
-       y(i)= uavg(middle ,1,i)
-%        hold on;
+       y = uavg(middle ,1,k)
+       plot(k,uavg(middle ,1,k)); hold on;
+
      end
-      plot(1:size(uavg,3),y); drawnow
 end
 
 % --- Executes on selection change in popupmenu_component.
@@ -1004,16 +1003,11 @@ if isfield(handles,'x')==1  handles=rmfield(handles,{'x','y','u','v'}); end
 if isfield(handles,'xS')==1  handles=rmfield(handles,{'xS','yS','uS','vS'}); end
 if isfield(handles,'w')==1  handles=rmfield(handles,{'w'}); end
 if isfield(handles,'maskfile')==1  handles=rmfield(handles,{'maskfile'}); end
-if isfield(handles,'isvideo')==1  handles=rmfield(handles,{'isvideo'}); end
-if isfield(handles,'videObj')==1  handles=rmfield(handles,{'videObj'}); end
-if isfield(handles,'m')==1  handles=rmfield(handles,{'m'}); end
-
 
 %text
 set(handles.velocityInfo,'String','');drawnow;
 set(handles.flowRateUm,'String','');drawnow;
 set(handles.flowRateUl,'String','');drawnow;
-set(handles.text_frame,'String','');drawnow;
 
 guidata(hObject, handles)
 handles
