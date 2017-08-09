@@ -63,7 +63,7 @@ function piv_gui00_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for piv_gui00
 handles.output = hObject;
-
+set(handles.text15,'String','Please Load file...');drawnow;
 % Update handles structure
 guidata(hObject, handles);
 
@@ -102,6 +102,7 @@ imshow(readFrame(display))
 
 set(handles.text_video,'BackgroundColor','green');
 set(handles.text_images,'BackgroundColor',[0.94 0.94 0.94]);
+set(handles.text15,'String','Video Loaded');drawnow;
 handles.isvideo=1;
 guidata(hObject,handles)
 
@@ -237,6 +238,7 @@ switch choice
                set(handles.text15,'String','Maskfile is ready');drawnow;
             case 'no'
                handles.maskfile=[]; 
+               set(handles.text15,'String','Empty mask');
         end
     case 'What is Maskfile'
         uiwait(msgbox('Maskfile is...'))       
@@ -318,7 +320,7 @@ function PB_run_check_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 hold off
-set(handles.text15,'String','wait: load parameters');drawnow;
+set(handles.text15,'String','Wait: Loading parameters');drawnow;
 sizeFactor = str2num(get(handles.edit_sizeFactor1,'string'))
 wins = str2num(get(handles.edit_Winsize,'string'))
 deltaT = str2num(get(handles.edit_deltaT,'string'))
@@ -360,6 +362,9 @@ set(handles.text15,'String','Wait: Correlation');drawnow;
 [x,y,u,v,snr,pkh] = matpiv(handles.image{1},handles.image{2},transpose(wins),deltaT,overlap,method,[],handles.maskfile);
  imshow(handles.image{1});   hold on;
  handles.fig=quiver(x,y,u,v,sizeFactor);
+ xlabel('pixel');
+ ylabel('pixel');
+ axis on
  zoom on
  
 handles.x = x; handles.y = y; handles.u = u; handles.v = v; handles.snr = snr; handles.pkh = pkh;
@@ -378,10 +383,11 @@ stime = str2num(get(handles.edit_strartTime,'string'))+1
 etime = str2num(get(handles.edit_endTime,'string'))    
 playback = struct('fps',fps,'stime',stime,'etime',etime)
 
+set(handles.text15,'String','Wait: Correlate frame by frame');drawnow;
 [m] = video_rawData(video, piv, playback, folder, handles)    
 handles.m = m;
-guidata(hObject, handles) 
 set(handles.text15,'String','Finished');
+guidata(hObject, handles) 
 end   
 
   
@@ -411,7 +417,7 @@ handles.isvideo=0;
 guidata(hObject, handles)
 set(handles.text_video,'BackgroundColor',[0.94 0.94 0.94]);
 set(handles.text_images,'BackgroundColor','green');
-set(handles.text15,'String','pair loded');drawnow;
+set(handles.text15,'String','Pair loaded');drawnow;
 
 
 function edit_filterChoose_Callback(hObject, eventdata, handles)
@@ -465,7 +471,7 @@ function PB_run_postprocess_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 hold off
-set(handles.text15,'String','wait: load parameters'); drawnow;
+set(handles.text15,'String','Wait: Loading parameters'); drawnow;
 sizeFactor = str2num(get(handles.edit_sizeFactor2,'string'))
 wins = str2num(get(handles.edit_Winsize,'string'))
 deltaT = str2num(get(handles.edit_deltaT,'string'))
@@ -496,7 +502,7 @@ end
 x = handles.x; y = handles.y; u = handles.u; v = handles.v; snr = handles.snr; pkh = handles.pkh;
  
 imshow(handles.image{1});   hold on; 
- set(handles.text15,'String','wait: filtering');drawnow;
+ set(handles.text15,'String','Wait: Filtering');drawnow;
  for choice=filterChoose    
      switch choice
         case 1
@@ -511,8 +517,8 @@ imshow(handles.image{1});   hold on;
  handles.fig=quiver(x,y,u,v,sizeFactor); 
  zoom on
  handles.xS = x; handles.yS = y; handles.uS = u; handles.vS = v; handles.snrS = snr; handles.pkhS = pkh;
-guidata(hObject, handles)
- set(handles.text15,'String','finish');drawnow;
+ set(handles.text15,'String','Finished');drawnow;
+ guidata(hObject, handles)
  
 function edit_localThreshold_Callback(hObject, eventdata, handles)
 % hObject    handle to edit_localThreshold (see GCBO)
@@ -988,7 +994,7 @@ handles.isvideo=0;
 guidata(hObject, handles)
 set(handles.text_video,'BackgroundColor',[0.94 0.94 0.94]);
 set(handles.text_images,'BackgroundColor','green');
-set(handles.text15,'String','example loded');drawnow;
+set(handles.text15,'String','Example loaded');drawnow;
 
 % --- Executes on button press in PB_reset.
 function PB_reset_Callback(hObject, eventdata, handles)
@@ -1133,9 +1139,10 @@ function PB_Interpolate_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % hold off
 sizeFactor = str2num(get(handles.edit_sizeFactor2,'string'))
+set(handles.text15,'String','Wait: Interpolating');drawnow;
 
 [handles.uS,handles.vS] = naninterp(handles.uS,handles.vS,'linear',handles.maskfile,handles.xS,handles.yS)
- set(handles.text15,'String','finish');
+ set(handles.text15,'String','Finished');
  handles.fig=quiver(handles.xS,handles.yS,handles.uS,handles.vS,sizeFactor); 
  zoom on
 
@@ -1158,7 +1165,7 @@ function PB_density_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 hold off  
-set(handles.text15,'String','wait: calculating'); drawnow;
+set(handles.text15,'String','Wait: Calculating'); drawnow;
 handles.densityWin  = str2num(get(handles.edit_densityWin,'string'))
 
 myfun = @(block_struct) ...
@@ -1192,6 +1199,8 @@ imagesc(I);
 colormap('jet')
 % colormap(flipud(colormap('jet')))
 colorbar;
+ set(handles.text15,'String','Finished');drawnow;
+
 
 % --------------------------------------------------------------------
 function File_Callback(hObject, eventdata, handles)
